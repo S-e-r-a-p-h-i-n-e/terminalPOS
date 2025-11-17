@@ -7,15 +7,19 @@
 #include <thread> // for sleep functionality
 #include <cctype> // to check if character is digit
 #include <iomanip> // for setting decimal precision
+#include <random> // for randomized stocks
 
 using std::cout;                   
 using std::cin;
 using std::vector;        
 using std::string;        
-using std::fixed;                 // very polluted usage of namespace but still safer than using namespace std so i dont really mind
-using std::setprecision;
-using std::numeric_limits;
-using std::streamsize;
+using std::fixed;                 
+using std::setprecision;             // very polluted usage of namespace but still safer 
+using std::numeric_limits;           
+using std::streamsize;               // than using namespace std so i don't really mind
+using std::random_device;
+using std::mt19937;
+using std::uniform_int_distribution;
 using namespace std::this_thread; 
 using namespace std::chrono; 
 
@@ -32,18 +36,6 @@ struct CartItem {
     double subtotal;
 };
 
-inline vector<MenuItem> inventory = {
-    {1, "Asus ROG Strix GeForce RTX 3090 EVA Edition", 2050.00, 0},
-    {2, "Asus ROG Strix XG27AQM EVA Edition", 650.00, 16},
-    {3, "Asus ROG Strix Helios EVA Edition", 1000.00, 0},
-    {4, "Asus ROG MAXIMUS Z690 HERO EVA Edition", 1600.00, 13},
-    {5, "Asus ROG Thor 1000W Platinum II EVA Edition", 700.00, 10},
-    {6, "Intel Core i9-14900K", 450.00, 4},
-    
-};
-
-inline vector<CartItem> cart;
-
 inline int getValidatedNumber(const string& prompt) { // helper function to validate number inputs just so
     int value;                                        // "if (!(cin >> var)) { cin.clear(); cin.ignore(); etc etc }"
     while (true) {                                    // isnt repeated EVERYWHERE
@@ -58,6 +50,25 @@ inline int getValidatedNumber(const string& prompt) { // helper function to vali
         return value;
     }
 } 
+
+inline int getRandomStock(int min, int max) {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(min, max);
+    return dis(gen);
+}
+
+inline vector<MenuItem> inventory = {
+    {1, "Asus ROG Strix GeForce RTX 3090 EVA Edition", 2050.00, getRandomStock(0, 5)},
+    {2, "Asus ROG Strix XG27AQM EVA Edition", 650.00, getRandomStock(5, 20)},
+    {3, "Asus ROG Strix Helios EVA Edition", 1000.00, getRandomStock(0, 8)},
+    {4, "Asus ROG MAXIMUS Z690 HERO EVA Edition", 1600.00, getRandomStock(2, 10)},
+    {5, "Asus ROG Thor 1000W Platinum II EVA Edition", 700.00, getRandomStock(5, 15)},
+    {6, "Intel Core i9-14900K", 450.00, getRandomStock(1, 5)},
+    
+};
+
+inline vector<CartItem> cart;
 
 inline void displayMenu() {
     cout << "\n===== MAIN MENU =====\n";
@@ -99,16 +110,20 @@ inline void takeOrder() {
         id = getValidatedNumber("Enter Item ID or 7 to go back: ");
         
         if (id == 7) return;
-        else if (id == 3 || id == 1) {
+
+        if (id >= 1 && id <= static_cast<int>(inventory.size())) {
+            index = static_cast<size_t>(id - 1); // Get the index
+
+        if (inventory[index].stock == 0) {
             cout << "\n!! Sorry, this item is out of stock. Please choose another item. !!\n";
-            sleep_for(seconds(1));
+            sleep_for(seconds(2));
+            continue; 
         }
-        else if (id >= 1 && id <= static_cast<int>(inventory.size())) {
-            index = static_cast<size_t>(id - 1);
             break;
+
         } else {
             cout << "\n!! Invalid item ID. Please try again. !!\n";
-            sleep_for(seconds(1));
+            sleep_for(seconds(2));
         }
     }
 
@@ -121,7 +136,7 @@ inline void takeOrder() {
         } else {
             break;
         }
-        sleep_for(seconds(1));
+        sleep_for(seconds(2));
     }
 
     inventory[index].stock -= qty;
