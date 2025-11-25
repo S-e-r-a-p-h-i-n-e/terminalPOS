@@ -3,7 +3,6 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
-CMakeLists.txt
 
 # 2. Ignore compiled executables (just in case)
 *.exe
