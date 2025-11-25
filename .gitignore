@@ -1,0 +1,19 @@
+# 1. Ignore the CMake Build folder
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CMakeLists.txt
+
+# 2. Ignore compiled executables (just in case)
+*.exe
+*.o
+*.out
+market_app
+
+# 3. Ignore System Files (Mac/Windows junk)
+.DS_Store
+Thumbs.db
+
+# 4. Ignore Editor Settings (VS Code)
+.vscode/
