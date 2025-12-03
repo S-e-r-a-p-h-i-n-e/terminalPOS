@@ -16,8 +16,10 @@ int main() {
                 viewCart();
                 break;
             case 3:
-                checkout();
-                return 0;
+                if (checkout()) {
+                    return 0; 
+                }
+                else break;
             case 4:
                 std::cout << "Thank you for visiting! Goodbye!\n";
                 return 0;

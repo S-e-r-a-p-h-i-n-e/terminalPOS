@@ -112,15 +112,16 @@ void takeOrder() {
     }
 }
 
-void checkout(){
+bool checkout(){
     viewCart();
     if (cart.empty()) {
         cout << "Your cart is empty! Cannot proceed.\n";
-        return;
+        return false;
     }
     cout << "Proceeding to checkout...\n";
     sleep_for(seconds(3));
     cout << "Checkout complete! Thank you!\n";
     
     clearCartLogic(); 
+    return true;
 }

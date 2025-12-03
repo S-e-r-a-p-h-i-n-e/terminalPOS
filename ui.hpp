@@ -7,7 +7,7 @@ void displayMenu();
 void displayInv();
 void takeOrder();
 void viewCart();
-void checkout();
+bool checkout();
 int getValidatedNumber(const std::string& prompt);
 
 #endif
